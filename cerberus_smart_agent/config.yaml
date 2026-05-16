@@ -1,5 +1,5 @@
 name: Cerberus SMART Agent
-version: "0.1.0"
+version: "0.1.1"
 slug: cerberus_smart_agent
 description: Local SMART data exporter for the Cerberus integration. Reads disk SMART via smartctl and exposes it over a local HTTP API.
 url: https://github.com/HowmationFr/HowmationAddons/tree/main/cerberus_smart_agent
