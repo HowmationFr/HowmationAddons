@@ -1,0 +1,36 @@
+name: Cerberus SMART Agent
+version: "0.1.0"
+slug: cerberus_smart_agent
+description: Local SMART data exporter for the Cerberus integration. Reads disk SMART via smartctl and exposes it over a local HTTP API.
+url: https://github.com/HowmationFr/HowmationAddons/tree/main/cerberus_smart_agent
+stage: stable
+arch:
+  - amd64
+  - aarch64
+  - armv7
+init: false
+boot: auto
+startup: services
+host_network: false
+privileged:
+  - SYS_RAWIO
+  - SYS_ADMIN
+udev: true
+full_access: true
+ports:
+  "8099/tcp": 8099
+ports_description:
+  "8099/tcp": Local-only SMART API for Cerberus
+homeassistant_api: false
+hassio_api: false
+auth_api: false
+ingress: false
+panel_icon: mdi:harddisk
+options:
+  log_level: info
+  scan_paths:
+    - /dev
+schema:
+  log_level: list(debug|info|warning|error)
+  scan_paths:
+    - str
