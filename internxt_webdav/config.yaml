@@ -1,9 +1,9 @@
 name: Internxt WebDAV
-version: "0.1.0"
+version: "0.1.1"
 slug: internxt_webdav
-description: Lance Internxt CLI en mode WebDAV pour exposer le stockage Internxt à l'intégration WebDAV de Home Assistant (sauvegardes).
+description: Runs Internxt CLI in WebDAV mode so Internxt Drive can be used as a backup destination by the Home Assistant core WebDAV integration.
 url: https://github.com/HowmationFr/HowmationAddons/tree/main/internxt_webdav
-stage: experimental
+stage: stable
 arch:
   - amd64
   - aarch64
@@ -14,7 +14,7 @@ host_network: false
 ports:
   "3005/tcp": 3005
 ports_description:
-  "3005/tcp": Endpoint WebDAV (HTTP, à cibler depuis l'intégration WebDAV de HA)
+  "3005/tcp": WebDAV endpoint (HTTP, target this from HA's WebDAV integration)
 homeassistant_api: false
 hassio_api: false
 auth_api: false

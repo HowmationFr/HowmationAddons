@@ -1,20 +1,20 @@
 """Cerberus SMART Agent.
 
-Petit serveur HTTP local exposant les données SMART du host via ``smartctl``.
-Conçu pour être lancé comme add-on Home Assistant privilégié. Aucun secret,
-aucune authentification : isolation réseau Docker, ne sort jamais du réseau
-interne du Supervisor.
+Small local HTTP server exposing host SMART data via ``smartctl``.
+Designed to run as a privileged Home Assistant add-on. No secrets,
+no authentication: relies on Docker network isolation, never reaches
+outside the Supervisor's internal network.
 
-Endpoints :
+Endpoints:
 - GET /health           -> {"ok": true, "version": "0.1.1"}
 - GET /smart/list       -> ``smartctl --scan -j``
-- GET /smart/{name}     -> sortie complète ``smartctl -a -j /dev/{name}``.
-  Pour les NVMe, si l'appel sur le controleur (``/dev/nvme0``) ne renvoie pas
-  les sections SMART utiles, fallback automatique sur le namespace
-  (``/dev/nvme0n1``). Le payload renvoyé inclut toujours ``exit_code`` et
-  ``stderr`` pour faciliter le debug.
+- GET /smart/{name}     -> full ``smartctl -a -j /dev/{name}`` output.
+  For NVMe, if the controller call (``/dev/nvme0``) doesn't return the
+  useful SMART sections, automatically falls back to the namespace
+  (``/dev/nvme0n1``). The returned payload always includes ``exit_code``
+  and ``stderr`` to make debugging easier.
 
-Aucune commande de modification (--set, --smart, …) n'est exposée.
+No mutating commands (--set, --smart, ...) are exposed.
 """
 
 from __future__ import annotations
@@ -24,7 +24,7 @@ import logging
 import os
 import re
 import shutil
-import subprocess  # noqa: S404 — appel contrôlé à smartctl uniquement
+import subprocess  # noqa: S404 — controlled call to smartctl only
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse
 
@@ -39,13 +39,13 @@ log = logging.getLogger("cerberus-agent")
 
 
 def run_smartctl(args: list[str], timeout: int = 15) -> dict:
-    """Exécute smartctl en mode JSON et retourne le payload + status complet."""
+    """Run smartctl in JSON mode and return the payload + full status."""
     if not os.path.exists(SMARTCTL):
         return {"ok": False, "error": "smartctl not found", "data": {}, "stderr": "", "exit_code": -1, "cmd": ""}
     cmd = [SMARTCTL, *args, "-j"]
     log.debug("running %s", cmd)
     try:
-        result = subprocess.run(  # noqa: S603 — chemin résolu, args contrôlés
+        result = subprocess.run(  # noqa: S603 — resolved path, controlled args
             cmd,
             capture_output=True,
             text=True,
@@ -80,7 +80,7 @@ def scan_devices() -> dict:
 
 
 def _has_smart_data(payload: dict) -> bool:
-    """Heuristique : le payload contient-il des données SMART utiles ?"""
+    """Heuristic: does the payload contain useful SMART data?"""
     if not isinstance(payload, dict):
         return False
     keys = (
@@ -95,11 +95,11 @@ def _has_smart_data(payload: dict) -> bool:
 
 
 def smart_info(device: str) -> dict:
-    """Tente plusieurs invocations smartctl pour obtenir les données SMART d'un device.
+    """Try multiple smartctl invocations to retrieve SMART data for a device.
 
-    Pour NVMe : si ``/dev/nvme0`` ne renvoie pas de payload utile, retente avec
-    ``/dev/nvme0n1`` (namespace 1) qui est requis sur certaines plateformes.
-    Pour SATA : essaie ``-d auto/sat/scsi`` en cas d'échec de l'auto-détection.
+    For NVMe: if ``/dev/nvme0`` doesn't return a useful payload, retry with
+    ``/dev/nvme0n1`` (namespace 1), which is required on some platforms.
+    For SATA: try ``-d auto/sat/scsi`` if auto-detection fails.
     """
     if not DEVICE_NAME_RE.match(device):
         return {"ok": False, "error": "invalid device name"}
@@ -108,7 +108,7 @@ def smart_info(device: str) -> dict:
     attempts: list[str] = [f"/dev/{device}"]
 
     if device.startswith("nvme") and not _has_smart_data(primary.get("data", {})):
-        # nvme0 -> nvme0n1 (namespace 1) si le device détecté n'a pas de namespace explicite
+        # nvme0 -> nvme0n1 (namespace 1) when the detected device has no explicit namespace
         if "n" not in device[4:]:
             ns_device = f"{device}n1"
             attempts.append(f"/dev/{ns_device}")

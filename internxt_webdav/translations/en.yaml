@@ -1,0 +1,38 @@
+configuration:
+  internxt_email:
+    name: Internxt email
+    description: Email of your Internxt account.
+  internxt_password:
+    name: Internxt password
+    description: Password of your Internxt account. Stored encrypted by the Supervisor.
+  internxt_otp_secret:
+    name: 2FA TOTP secret (optional)
+    description: >-
+      Base32 TOTP secret shown once when you enabled 2FA on your Internxt
+      account. Required only if 2FA is enabled; lets the add-on re-login
+      automatically on every restart.
+  internxt_workspace_id:
+    name: Workspace ID (optional, Business only)
+    description: >-
+      ID of an Internxt Business / Teams workspace to target instead of
+      your personal drive. Leave empty on a personal account. This is NOT
+      a folder ID — using a folder UUID from a Drive URL will return
+      "Workspace not found".
+  webdav_username:
+    name: WebDAV username
+    description: >-
+      Username the Home Assistant WebDAV integration will present.
+      Pick anything (default "homeassistant"). Do not reuse your Internxt
+      password here.
+  webdav_password:
+    name: WebDAV password
+    description: >-
+      Password the WebDAV server will require. Generate a random one and
+      paste the same value into the HA WebDAV integration.
+  delete_files_permanently:
+    name: Delete files permanently
+    description: >-
+      If enabled, files deleted via WebDAV bypass Internxt's trash and
+      cannot be recovered. Leave off unless you know what you're doing.
+network:
+  "3005/tcp": WebDAV endpoint (HTTP, target this from HA's WebDAV integration)

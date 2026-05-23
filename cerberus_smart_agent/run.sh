@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# Cerberus SMART Agent — wrapper de démarrage.
+# Cerberus SMART Agent — startup wrapper.
 
 set -eu
 

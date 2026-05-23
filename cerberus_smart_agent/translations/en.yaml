@@ -1,0 +1,11 @@
+configuration:
+  log_level:
+    name: Log level
+    description: Verbosity of the agent's logs. "info" is fine for normal operation.
+  scan_paths:
+    name: Scan paths
+    description: >-
+      Filesystem paths the agent looks at when listing block devices.
+      Default is /dev which covers all standard SATA/NVMe disks.
+network:
+  "8099/tcp": Local-only SMART API consumed by the Cerberus integration

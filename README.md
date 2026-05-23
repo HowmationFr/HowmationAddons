@@ -1,39 +1,43 @@
 # Howmation Add-ons
 
-Dépôt d'add-ons officiels [Howmation](https://github.com/HowmationFr) pour Home Assistant.
+Official [Howmation](https://github.com/HowmationFr) add-on repository for Home Assistant.
 
-## Add-ons disponibles
+## Available add-ons
 
-- [Cerberus SMART Agent](./cerberus_smart_agent) — expose les données SMART de l'hôte à l'intégration HACS Cerberus.
-- [Internxt WebDAV](./internxt_webdav) — wrappe Internxt CLI en serveur WebDAV pour brancher Internxt Drive comme destination de sauvegarde de l'intégration WebDAV core de Home Assistant.
+- [Cerberus SMART Agent](./cerberus_smart_agent) — exposes the host's disk SMART data to the Cerberus HACS integration.
+- [Internxt WebDAV](./internxt_webdav) — wraps Internxt CLI as a WebDAV server so Internxt Drive can be used as a backup destination by Home Assistant's core WebDAV integration.
 
-## Installation du dépôt dans Home Assistant
+## Adding this repository to Home Assistant
 
-1. Home Assistant → **Paramètres** → **Modules complémentaires** → **Boutique des modules complémentaires**.
-2. Menu **⋯** (en haut à droite) → **Dépôts**.
-3. Coller `https://github.com/HowmationFr/HowmationAddons` puis **Ajouter**.
-4. Les add-ons Howmation apparaissent en bas de la boutique.
+1. Home Assistant → **Settings** → **Add-ons** → **Add-on Store**.
+2. **⋯** menu (top right) → **Repositories**.
+3. Paste `https://github.com/HowmationFr/HowmationAddons` then **Add**.
+4. Howmation add-ons appear at the bottom of the store.
 
-## Pour les développeurs
+## For developers
 
-Structure standard d'un dépôt d'add-ons HA Supervisor :
+Standard layout for a Home Assistant Supervisor add-on repository:
 
 ```
 HowmationAddons/
-├── repository.yaml             # description du dépôt (ce fichier)
-├── README.md                   # ce fichier
-├── cerberus_smart_agent/       # un sous-dossier par add-on
-│   ├── config.yaml             # manifest de l'add-on (slug, version, options…)
-│   ├── Dockerfile              # image multi-arch
+├── repository.yaml             # repository metadata
+├── README.md                   # this file
+├── cerberus_smart_agent/       # one folder per add-on
+│   ├── config.yaml             # add-on manifest (slug, version, options…)
+│   ├── Dockerfile              # multi-arch image
 │   ├── run.sh                  # entrypoint
-│   ├── agent.py                # logique métier
-│   └── README.md               # doc utilisateur de l'add-on
-└── internxt_webdav/            # autre add-on (même structure, sans agent.py)
+│   ├── agent.py                # business logic
+│   ├── translations/           # i18n strings for the config UI
+│   └── README.md               # user-facing documentation
+└── internxt_webdav/            # another add-on (same layout, no agent.py)
     ├── config.yaml
     ├── build.yaml
     ├── Dockerfile
     ├── run.sh
+    ├── translations/
     └── README.md
 ```
 
-Référence : <https://developers.home-assistant.io/docs/add-ons/repository>.
+User-facing strings (options labels, port descriptions) are localized via the HA-native `translations/<lang>.yaml` files per add-on (English + French shipped today). The Supervisor picks the right one based on the user's HA UI language.
+
+Reference: <https://developers.home-assistant.io/docs/add-ons/repository>.

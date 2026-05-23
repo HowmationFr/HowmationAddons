@@ -1,0 +1,42 @@
+configuration:
+  internxt_email:
+    name: Email Internxt
+    description: Adresse email de votre compte Internxt.
+  internxt_password:
+    name: Mot de passe Internxt
+    description: >-
+      Mot de passe de votre compte Internxt. Stocké chiffré par le
+      Supervisor.
+  internxt_otp_secret:
+    name: Secret TOTP 2FA (optionnel)
+    description: >-
+      Secret TOTP base32 affiché une seule fois lors de l'activation
+      de la 2FA sur votre compte Internxt. Requis uniquement si la 2FA
+      est active ; permet à l'add-on de se reconnecter automatiquement
+      à chaque redémarrage.
+  internxt_workspace_id:
+    name: ID de workspace (optionnel, Business uniquement)
+    description: >-
+      ID d'un workspace Internxt Business / Teams pour y cibler les
+      sauvegardes au lieu de votre drive personnel. Laisser vide sur un
+      compte personnel. Ce n'est PAS un ID de dossier — utiliser un UUID
+      de dossier d'une URL Drive renverra "Workspace not found".
+  webdav_username:
+    name: Utilisateur WebDAV
+    description: >-
+      Nom d'utilisateur que l'intégration WebDAV de Home Assistant
+      enverra. Choisissez ce que vous voulez (par défaut "homeassistant").
+      Ne réutilisez pas votre mot de passe Internxt ici.
+  webdav_password:
+    name: Mot de passe WebDAV
+    description: >-
+      Mot de passe attendu par le serveur WebDAV. Générez quelque chose
+      d'aléatoire et collez la même valeur côté intégration WebDAV de HA.
+  delete_files_permanently:
+    name: Suppression définitive des fichiers
+    description: >-
+      Si activé, les fichiers supprimés via WebDAV ne passent pas par la
+      corbeille Internxt et ne sont pas récupérables. À laisser désactivé
+      sauf besoin précis.
+network:
+  "3005/tcp": Endpoint WebDAV (HTTP, à cibler depuis l'intégration WebDAV de HA)

@@ -1,0 +1,14 @@
+configuration:
+  log_level:
+    name: Niveau de log
+    description: >-
+      Verbosité des logs de l'agent. "info" convient pour un fonctionnement
+      normal.
+  scan_paths:
+    name: Chemins à scanner
+    description: >-
+      Chemins dans le système de fichiers où l'agent cherche les
+      périphériques de stockage. Par défaut /dev, qui couvre tous les
+      disques SATA/NVMe standards.
+network:
+  "8099/tcp": API SMART locale consommée par l'intégration Cerberus
