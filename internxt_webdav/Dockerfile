@@ -1,0 +1,11 @@
+ARG BUILD_FROM
+FROM $BUILD_FROM
+
+ENV LANG=C.UTF-8
+
+COPY run.sh /run.sh
+RUN chmod a+x /run.sh
+
+EXPOSE 3005
+
+ENTRYPOINT ["/run.sh"]

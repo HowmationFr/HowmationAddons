@@ -1,0 +1,8 @@
+build_from:
+  amd64: internxt/webdav:latest
+  aarch64: internxt/webdav:latest
+labels:
+  org.opencontainers.image.title: Internxt WebDAV
+  org.opencontainers.image.description: Internxt CLI WebDAV wrapper pour Home Assistant.
+  org.opencontainers.image.source: https://github.com/HowmationFr/HowmationAddons
+  org.opencontainers.image.licenses: MIT
