@@ -1,5 +1,5 @@
 name: Internxt WebDAV
-version: "0.1.1"
+version: "0.1.2"
 slug: internxt_webdav
 description: Runs Internxt CLI in WebDAV mode so Internxt Drive can be used as a backup destination by the Home Assistant core WebDAV integration.
 url: https://github.com/HowmationFr/HowmationAddons/tree/main/internxt_webdav

@@ -59,6 +59,7 @@ After starting the add-on:
 - WebDAV authentication is **forced** (`WEBDAV_CUSTOM_AUTH=true`) — no anonymous mode exposed.
 - Your Internxt and WebDAV credentials are stored encrypted by the Supervisor (`password` / `email` schema fields).
 - No telemetry added by the add-on. Outbound traffic is just Internxt CLI talking to the official Internxt API.
+- Ships a dedicated AppArmor profile (`apparmor.txt`) that hard-denies `mount`, `sys_module`, `sys_rawio`, `sys_admin`, `mac_admin`, `mac_override` and restricts `ptrace` to within the container. If the Supervisor reports an AppArmor failure on a new Internxt CLI version, you can disable the profile in the add-on's "Info" tab as a quick workaround (drops the security rating from 6 to 5).
 
 ## Troubleshooting
 
