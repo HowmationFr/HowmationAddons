@@ -3,27 +3,21 @@
 profile internxt_webdav flags=(attach_disconnected,mediate_deleted) {
   #include <abstractions/base>
 
-  # The upstream Node app + Internxt CLI legitimately needs broad standard
-  # access (binary execution, libraries, /root/.internxt-cli/, /data,
-  # network sockets, etc.). We allow these and rely on the deny rules below
-  # to block what a WebDAV bridge has no business doing.
+  # Broad allows — the upstream Node + Internxt CLI legitimately need them
+  # (libc, /app, /root/.internxt-cli, /data, network sockets, etc.).
   capability,
   file,
-  signal,
   network,
-  umount,
+  signal,
 
-  # Hard denies — none of these are needed to talk WebDAV or call the
-  # Internxt API, so removing them shrinks the blast radius if the binary
-  # is ever compromised.
+  # Targeted denies — known-portable AppArmor capabilities only.
+  # A WebDAV bridge has no business loading kernel modules, doing raw I/O,
+  # asking for sys_admin, or mounting filesystems.
   deny capability sys_module,
   deny capability sys_rawio,
   deny capability sys_admin,
-  deny capability mac_admin,
-  deny capability mac_override,
   deny mount,
 
-  # Restrict ptrace to within this profile (no snooping into other
-  # add-ons / Home Assistant Core from this container).
+  # Restrict ptrace to within this profile (no cross-container snooping).
   ptrace (read,trace) peer=@{profile_name},
 }
