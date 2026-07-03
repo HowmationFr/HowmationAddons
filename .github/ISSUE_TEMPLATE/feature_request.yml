@@ -1,0 +1,25 @@
+name: 💡 Feature request
+description: Suggest an improvement for one of the add-ons
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the use case, not only the solution — there may be a better way to get there.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: What would you like to happen? A new option, a behavior change…
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Workarounds you tried, other add-ons/tools, upstream features…
+    validations:
+      required: false

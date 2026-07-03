@@ -1,0 +1,11 @@
+version: 2
+updates:
+  # Keep GitHub Actions (checkout, linter, builder…) up to date.
+  # Note: the internxt/webdav pin lives in internxt_webdav/build.yaml, an
+  # HA-specific format Dependabot can't track — the "Upstream watch" workflow
+  # opens an issue when a newer upstream tag is published.
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    labels: ["ci"]

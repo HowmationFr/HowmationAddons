@@ -1,0 +1,62 @@
+name: Upstream watch
+
+# Opens an issue when internxt/webdav publishes a version tag newer than the
+# one pinned in internxt_webdav/build.yaml (Dependabot can't track that file).
+
+on:
+  schedule:
+    - cron: "17 6 * * 1" # every Monday morning
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    name: Compare pinned tag with latest upstream
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Check Docker Hub for a newer internxt/webdav tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pinned=$(sed -n 's|^  amd64:[[:space:]]*internxt/webdav:||p' internxt_webdav/build.yaml)
+          latest=$(curl -fsSL "https://hub.docker.com/v2/repositories/internxt/webdav/tags/?page_size=100" \
+            | jq -r '.results[].name' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n1)
+          echo "pinned=${pinned} latest=${latest}"
+
+          if [ -z "$pinned" ] || [ -z "$latest" ]; then
+            echo "::error::Could not determine pinned or latest tag"
+            exit 1
+          fi
+          if [ "$(printf '%s\n%s\n' "$pinned" "$latest" | sort -V | tail -n1)" = "$pinned" ]; then
+            echo "Pinned tag is up to date."
+            exit 0
+          fi
+
+          title="Upstream update available: internxt/webdav ${latest}"
+          if gh issue list --state open --json title --jq '.[].title' | grep -Fxq "$title"; then
+            echo "Issue already open."
+            exit 0
+          fi
+
+          body=$(printf '%s\n' \
+            "Upstream published \`internxt/webdav:${latest}\` — the add-on currently pins \`${pinned}\`." \
+            '' \
+            'Release notes: https://github.com/internxt/cli/releases' \
+            '' \
+            'Bump checklist:' \
+            '- [ ] Review upstream changes (watch for `login-legacy`, `webdav-config` flags, entrypoint/healthcheck changes — run.sh mirrors the upstream startup sequence)' \
+            '- [ ] Update both arch tags in `internxt_webdav/build.yaml`' \
+            '- [ ] Update the `ARG BUILD_FROM` default in `internxt_webdav/Dockerfile`' \
+            '- [ ] Update the upstream badge in `internxt_webdav/README.md` and the pin mentions in `DOCS.md`' \
+            '- [ ] Test on a real Home Assistant install' \
+            '- [ ] Bump add-on `version` + CHANGELOG entry' \
+            '' \
+            '*Opened automatically by the Upstream watch workflow.*')
+          gh label create upstream --color 0e8a16 --description "Upstream Internxt CLI update" --force || true
+          gh issue create --title "$title" --label "upstream" --body "$body"

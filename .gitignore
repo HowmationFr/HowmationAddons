@@ -1,0 +1,6 @@
+# Private / work-in-progress add-ons — never published
+cerberus_smart_agent/
+
+# OS noise
+.DS_Store
+Thumbs.db

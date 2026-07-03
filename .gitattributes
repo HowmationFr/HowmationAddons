@@ -1,0 +1,10 @@
+# Normalize line endings; shell scripts and Dockerfiles must stay LF —
+# a CRLF shebang makes the container die at exec time.
+* text=auto
+*.sh text eol=lf
+Dockerfile text eol=lf
+*.yaml text
+*.yml text
+*.md text
+*.txt text
+*.png binary

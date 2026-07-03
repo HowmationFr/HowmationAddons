@@ -1,0 +1,48 @@
+name: Builder
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Test build internxt_webdav (${{ matrix.arch }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            os: ubuntu-24.04
+          - arch: aarch64
+            os: ubuntu-24.04-arm
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Read add-on version and pinned base image
+        id: info
+        run: |
+          build_from=$(sed -n "s/^  ${{ matrix.arch }}:[[:space:]]*//p" internxt_webdav/build.yaml)
+          version=$(sed -n 's/^version:[[:space:]]*//p' internxt_webdav/config.yaml | tr -d '"')
+          echo "build_from=${build_from}" >> "$GITHUB_OUTPUT"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+
+      - name: Test build (no publish)
+        uses: home-assistant/builder/actions/build-image@2026.06.0
+        with:
+          arch: ${{ matrix.arch }}
+          container-registry-password: ${{ secrets.GITHUB_TOKEN }}
+          context: "./internxt_webdav"
+          image: ghcr.io/howmationfr/${{ matrix.arch }}-internxt-webdav
+          image-tags: ${{ steps.info.outputs.version }}
+          version: ${{ steps.info.outputs.version }}
+          build-args: |
+            BUILD_FROM=${{ steps.info.outputs.build_from }}
+          cosign: "false"
+          push: "false"

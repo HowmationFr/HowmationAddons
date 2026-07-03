@@ -1,0 +1,27 @@
+name: Internxt WebDAV
+version: "1.0.0"
+slug: internxt_webdav
+description: Runs Internxt CLI in WebDAV mode so Internxt Drive can be used as a backup destination by the Home Assistant core WebDAV integration.
+url: https://github.com/HowmationFr/HowmationAddons
+arch:
+  - amd64
+  - aarch64
+startup: services
+ports:
+  "3005/tcp": null
+ports_description:
+  "3005/tcp": WebDAV endpoint (HTTP). Leave unmapped — Home Assistant reaches the add-on over the internal Docker network. Map it only if clients outside Home Assistant need access.
+options:
+  internxt_email: null
+  internxt_password: null
+  webdav_username: "homeassistant"
+  webdav_password: null
+  delete_files_permanently: false
+schema:
+  internxt_email: email
+  internxt_password: password
+  internxt_otp_secret: "password?"
+  internxt_workspace_id: "str?"
+  webdav_username: str
+  webdav_password: password
+  delete_files_permanently: bool
